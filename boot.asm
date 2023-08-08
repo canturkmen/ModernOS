@@ -5,10 +5,24 @@ _start:
     jmp short start
     nop
 
-times 33 db 0
+times 33 db 
 
 start:
     jmp 0x7c0:step2
+
+handle_zero: 
+    mov ah, 0eh
+    mov al, 'A'
+    mov bx, 0x00
+    int 0x10
+    iret
+
+handle_one:
+    mov ah, 0eh
+    mov al, 'V'
+    mov bx, 0x00
+    int 0x10
+    iret
 
 step2:
     cli ; Clear Interrupts
@@ -21,6 +35,15 @@ step2:
     mov sp, 0x7c00     
 
     sti ; Enables Interrupts
+
+    mov word[ss:0x00], handle_zero
+    mov word[ss:0x02], 0x7c0
+
+    mov word[ss:0x04], handle_one
+    mov word[ss:0x06], 0x7c0
+
+    int 1
+
     mov si, message
     call print
     jmp $
