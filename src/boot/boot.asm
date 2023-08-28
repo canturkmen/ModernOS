@@ -77,7 +77,7 @@ ata_lba_read:
     or eax, 0xE0 ; Select the master drive
     mov dx, 0x1F6
     out dx, al
-    ; Finished sending the highest 8 bits of the lba
+    ; Finished sending the highest 8 bits of the LBA
 
     ; Send the total sectors to read
     mov eax, ecx
