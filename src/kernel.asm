@@ -1,6 +1,9 @@
 [BITS 32]
 
+; Export labels
 global _start
+
+; Import labels
 extern kernel_main
 
 CODE_SEG equ 0x08
