@@ -44,9 +44,7 @@ void idt_init()
     idtr_descriptor.base = (uint32_t)idt_descriptors;
 
     for(int i = 0; i < MODERNOS_TOTAL_INTERRUPTS; i++)
-    {
         idt_set(i, no_interrupt);
-    }
 
     idt_set(0, idt_zero);
     idt_set(0x21, int21h);
