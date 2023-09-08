@@ -19,8 +19,6 @@ static int heap_validate_table(void* ptr, void* end, struct heap_table* table)
 
     out:
         return res;
-
-    return res;    
 }
 
 static bool heap_validate_alignment(void* ptr)
@@ -55,7 +53,7 @@ int heap_create(struct heap* heap, void* ptr, void* end, struct heap_table* tabl
 
 static uint32_t heap_align_value_to_upper(uint32_t val)
 {
-     if(val % MODERNOS_HEAP_BLOCK_SIZE_BYTES == 0)
+     if((val % MODERNOS_HEAP_BLOCK_SIZE_BYTES) == 0)
         return val;
 
     val = (val - (val % MODERNOS_HEAP_BLOCK_SIZE_BYTES));
@@ -117,7 +115,7 @@ void heap_mark_blocks_taken(struct heap* heap, int start_block, int total_blocks
     {
         heap->table->entries[i] = entry;
         entry = HEAP_BLOCK_TABLE_ENTRY_TAKEN;
-        if(i != end_block) 
+        if(i != end_block - 1) 
             entry |= HEAP_BLOCK_HAS_NEXT;
     }
 }
@@ -149,7 +147,7 @@ void* heap_malloc(struct heap* heap, size_t size)
 
 int heap_address_to_block(struct heap* heap, void* address)
 {
-    return (int)((address - heap->saddr) / MODERNOS_HEAP_BLOCK_SIZE_BYTES);
+    return ((int)(address - heap->saddr)) / MODERNOS_HEAP_BLOCK_SIZE_BYTES;
 }
 
 void heap_mark_blocks_free(struct heap* heap, int starting_block)

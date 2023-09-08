@@ -31,7 +31,7 @@ void* kzalloc(size_t size)
     if(!ptr)
         return 0;
 
-    memset(ptr, 0, size);
+    memset(ptr, 0x00, size);
     return ptr;
 }
 
