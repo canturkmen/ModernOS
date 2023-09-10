@@ -1,6 +1,8 @@
 #ifndef DISK_H
 #define DISK_H
 
+#include "fs/file.h"
+
 typedef unsigned int MODERNOS_DISK_TYPE;
 
 // Represents a real physical hard disk 
@@ -10,6 +12,8 @@ struct disk
 {
     MODERNOS_DISK_TYPE type;
     int sector_size;
+
+    struct filesystem* filesystem;
 };  
 
 struct disk* disk_get(int index);
