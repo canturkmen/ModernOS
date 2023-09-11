@@ -11,12 +11,18 @@ typedef unsigned int MODERNOS_DISK_TYPE;
 struct disk 
 {
     MODERNOS_DISK_TYPE type;
-    int sector_size;
+    int sector_size;    
+
+    // The id of the disk
+    int id;
 
     struct filesystem* filesystem;
+
+    // The private data of our filesystem
+    void* fs_private;
 };  
 
-struct disk* disk_get(int index);
+struct disk* disk_get(int index);   
 void disk_search_and_init();
 int disk_read_block(struct disk* idisk, unsigned int lba, int total, void* buff);
 int disk_read_sector(int lba, int total, void* buffer);
