@@ -107,8 +107,6 @@ struct path_root* pathparser_parse(const char* path, const char* current_directo
     struct path_part* first_part = pathparser_parse_path_part(NULL, &temp_path);
     if(!first_part)
         goto out;
-
-    print("Line 111");
     
     path_root->first = first_part;
 
