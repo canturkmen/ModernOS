@@ -330,7 +330,7 @@ static int fat16_get_fat_entry(struct disk* disk, int cluster)
         goto out;
 
     uint32_t fat_table_position = fat16_get_first_fat_sector(private) * disk->sector_size;
-    res = diskstreamer_seek(stream, fat_table_position * (cluster * MODERNOS_FAT16_FAT_ENTRY_SIZE));
+    res = diskstreamer_seek(stream, fat_table_position + (cluster * MODERNOS_FAT16_FAT_ENTRY_SIZE));
     if(res < 0)
         goto out;
 
@@ -523,6 +523,7 @@ struct fat_item* fat16_new_fat_item_for_directory_item(struct disk* disk, struct
     {
         f_item->directory = fat16_load_fat_directory(disk, item);
         f_item->type = FAT_ITEM_TYPE_DIRECTORY;
+        return f_item;
     }
 
     f_item->type = FAT_ITEM_TYPE_FILE;
