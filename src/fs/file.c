@@ -177,7 +177,7 @@ out:
 int fseek(int fd, int offset, FILE_SEEK_MODE whence)
 {
     int res = 0;
-    struct file_descriptor* desc = file_descriptor(fd);
+    struct file_descriptor* desc = file_get_descriptor(fd);
     if(!desc)
     {
         res = -EIO;
