@@ -112,8 +112,6 @@ struct path_root* pathparser_parse(const char* path, const char* current_directo
 
     struct path_part* part = pathparser_parse_path_part(first_part, &temp_path);
 
-    print("Line 117");
-
     while(part)
         part = pathparser_parse_path_part(part, &temp_path);
 
