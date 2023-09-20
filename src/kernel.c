@@ -1,6 +1,8 @@
 #include "kernel.h"
+#include "config.h"
 #include "idt/idt.h"
 #include "io/io.h"
+#include "memory/memory.h"
 #include "memory/heap/kheap.h"
 #include "memory/paging/paging.h"
 #include "string/string.h"
@@ -8,6 +10,7 @@
 #include "disk/disk.h"
 #include "disk/streamer.h"
 #include "fs/pparser.h"
+#include "gdt/gdt.h"
 
 #include <stdint.h>
 #include <stddef.h>
@@ -76,10 +79,22 @@ void panic(const char* message)
     }
 }
 
+struct gdt gdt_real[MODERNOS_TOTAL_GDT_SEGMENTS];
+struct gdt_structured gdt_structed[MODERNOS_TOTAL_GDT_SEGMENTS] = {
+    {.base = 0x00, .limit = 0x00, .type = 0x00},            // NULL Segment
+    {.base = 0x00, .limit = 0xFFFFFFFF, .type = 0x9A},      // Kernel Code Segment
+    {.base = 0x00, .limit = 0xFFFFFFFF, .type = 0x92}       // Kernel Data Segment
+};
+ 
 void kernel_main() 
 {
     terminal_initialize();
     print("Hello World!\ntest\n");
+
+    // Load the GDT
+    memset(gdt_real, 0x00, sizeof(gdt_real));
+    gdt_structured_to_gdt(gdt_real, gdt_structed, MODERNOS_TOTAL_GDT_SEGMENTS);
+    gdt_load(gdt_real, sizeof(gdt_real));
 
     // Initialize the heap
     kheap_init();

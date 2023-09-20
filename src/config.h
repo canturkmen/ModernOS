@@ -19,4 +19,6 @@
 
 #define MODERNOS_MAX_PATH 108
 
+#define MODERNOS_TOTAL_GDT_SEGMENTS 3
+
 #endif
