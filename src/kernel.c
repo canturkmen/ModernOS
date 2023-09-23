@@ -83,6 +83,12 @@ void panic(const char* message)
     }
 }
 
+void kernel_page()
+{
+    kernel_registers();
+    paging_switch(kernel_chunk);
+}
+
 struct tss tss;
 struct gdt gdt_real[MODERNOS_TOTAL_GDT_SEGMENTS];
 struct gdt_structured gdt_structed[MODERNOS_TOTAL_GDT_SEGMENTS] = {
