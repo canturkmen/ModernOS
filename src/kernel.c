@@ -1,5 +1,6 @@
 #include "kernel.h"
 #include "config.h"
+#include "status.h"
 #include "idt/idt.h"
 #include "io/io.h"
 #include "memory/memory.h"
@@ -12,6 +13,8 @@
 #include "fs/pparser.h"
 #include "gdt/gdt.h"
 #include "task/tss.h"
+#include "task/task.h"
+#include "task/process.h"
 
 #include <stdint.h>
 #include <stddef.h>
@@ -130,17 +133,15 @@ void kernel_main()
     // Enable paging
     enable_paging();  
 
-    // Enable the system interrupts
-    enable_interrupts();
+    struct process* process = 0;
+    int res = process_load("0:/blank.bin", &process);
+    if(res != MODERNOS_ALL_OK)
+        panic("Failed to load blank.bin");
 
-    int fd = fopen("0:/hello.txt", "r");
-    if(fd) 
+    task_run_first_ever_task();
+
+    while(1)
     {
-        struct file_stat s;
-        fstat(fd, &s);
-        fclose(fd);
 
-        print("testing\n");
     }
-    while(1) {}
 }
