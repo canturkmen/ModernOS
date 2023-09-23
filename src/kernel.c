@@ -140,7 +140,7 @@ void kernel_main()
     // Enable paging
     enable_paging();  
 
-    // Register the kernel commands
+    // Register the kernel commands 
     isr80h_register_commands();
 
     struct process* process = 0;
