@@ -33,5 +33,6 @@ int paging_map(struct paging_4gb_chunk* directory, void* virt, void* phys, int f
 void* paging_align_address(void* ptr);
 
 bool paging_is_aligned(void* address);
+uint32_t paging_get(uint32_t* directory, void* virt);
 
 #endif

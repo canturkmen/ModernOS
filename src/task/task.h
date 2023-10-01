@@ -49,6 +49,7 @@ struct task* task_new(struct process* process);
 int task_free(struct task* task);
 int task_switch(struct task* task);
 int task_page();
+int copy_string_from_task(struct task* task, void* virtual, void* phys, int max);
 
 void task_run_first_ever_task();
 
