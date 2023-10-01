@@ -104,7 +104,6 @@ struct gdt_structured gdt_structed[MODERNOS_TOTAL_GDT_SEGMENTS] = {
 void kernel_main() 
 {
     terminal_initialize();
-    print("Hello World!\ntest\n");
 
     // Load the GDT
     memset(gdt_real, 0x00, sizeof(gdt_real));
