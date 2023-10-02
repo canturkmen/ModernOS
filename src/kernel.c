@@ -16,6 +16,7 @@
 #include "task/tss.h"
 #include "task/task.h"
 #include "task/process.h"
+#include "keyboard/keyboard.h"
 
 #include <stdint.h>
 #include <stddef.h>
@@ -68,9 +69,7 @@ void print(const char* str)
 {
     size_t len = strlen(str);
     for (int i = 0; i < len; i++) 
-    {
         terminal_writechar(str[i], 15);
-    }
 }
 
 static struct paging_4gb_chunk* kernel_chunk = 0;
@@ -141,6 +140,9 @@ void kernel_main()
 
     // Register the kernel commands 
     isr80h_register_commands();
+
+    // Initialize all the system keyboards
+    keyboard_init();
 
     struct process* process = 0;
     int res = process_load("0:/blank.bin", &process);
