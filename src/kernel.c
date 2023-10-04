@@ -100,7 +100,7 @@ struct gdt_structured gdt_structed[MODERNOS_TOTAL_GDT_SEGMENTS] = {
     {.base = (uint32_t)&tss, .limit = sizeof(tss), .type = 0xE9}        // TSS Segment
 };
 
-void pic_timer_callback(sturct interrupt_frame* frame)
+void pic_timer_callback(struct interrupt_frame* frame)
 {
     print("timer");
 }
@@ -152,10 +152,12 @@ void kernel_main()
     idt_register_interrupt_callback(0x20, pic_timer_callback);
 
     struct process* process = 0;
-    int res = process_load("0:/blank.bin", &process);
+    int res = process_load_switch("0:/blank.bin", &process);
     if(res != MODERNOS_ALL_OK)
         panic("Failed to load blank.bin");
 
+    keyboard_push('A');
+    
     task_run_first_ever_task();
 
     while(1)
