@@ -41,7 +41,7 @@ out:
 
 static int keyboard_get_tail_index(struct process* process)
 {
-    return process->keyboard.tail % sizeof(MODERNOS_KEYBOARD_BUFFER_SIZE);
+    return process->keyboard.tail % sizeof(process->keyboard.buffer);
 }
 
 void keyboard_backspace(struct process* process)
