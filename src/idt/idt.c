@@ -1,17 +1,20 @@
 #include "idt.h"
+#include "kernel.h"
 #include "config.h"
+
 #include "../memory/memory.h"
 #include "../io/io.h"
-#include "kernel.h"
+
 #include "task/task.h"
 
 static ISR80H_COMMAND isr80h_commands[MODERNOS_MAX_ISR80H_COMMANDS];
+
+extern void* interrupt_pointer_table[MODERNOS_TOTAL_INTERRUPTS];
 
 struct idt_desc idt_descriptors[MODERNOS_TOTAL_INTERRUPTS];
 struct idtr_desc idtr_descriptor;
 
 extern void idt_load(struct idtr_desc* ptr);
-extern void int21h();
 extern void no_interrupt();
 extern void isr80h_wrapper();
 
@@ -22,6 +25,11 @@ void int21h_handler()
 }
 
 void no_interrupt_handler()
+{
+    outb(0x20, 0x20);
+}
+
+void interrupt_handler(int interrupt, struct interrupt_frame* frame)
 {
     outb(0x20, 0x20);
 }
@@ -48,10 +56,9 @@ void idt_init()
     idtr_descriptor.base = (uint32_t)idt_descriptors;
 
     for(int i = 0; i < MODERNOS_TOTAL_INTERRUPTS; i++)
-        idt_set(i, no_interrupt);
+        idt_set(i, interrupt_pointer_table[i]);
 
     idt_set(0, idt_zero);
-    idt_set(0x21, int21h);
     idt_set(0x80, isr80h_wrapper);
 
     // Load the interrupt descriptor table
