@@ -55,7 +55,7 @@ no_interrupt:
         iret
 %endmacro
 
-%assign i    0
+%assign i 0
 %rep 512 
     interrupt i
 %assign i i+1

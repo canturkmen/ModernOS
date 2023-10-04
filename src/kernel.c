@@ -99,6 +99,11 @@ struct gdt_structured gdt_structed[MODERNOS_TOTAL_GDT_SEGMENTS] = {
     {.base = 0x00, .limit = 0xFFFFFFFF, .type = 0xF2},                  // User Data Segment
     {.base = (uint32_t)&tss, .limit = sizeof(tss), .type = 0xE9}        // TSS Segment
 };
+
+void pic_timer_callback(sturct interrupt_frame* frame)
+{
+    print("timer");
+}
  
 void kernel_main() 
 {
@@ -143,6 +148,8 @@ void kernel_main()
 
     // Initialize all the system keyboards
     keyboard_init();
+
+    idt_register_interrupt_callback(0x20, pic_timer_callback);
 
     struct process* process = 0;
     int res = process_load("0:/blank.bin", &process);

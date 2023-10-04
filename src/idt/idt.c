@@ -1,5 +1,6 @@
 #include "idt.h"
 #include "kernel.h"
+#include "status.h"
 #include "config.h"
 
 #include "../memory/memory.h"
@@ -8,6 +9,7 @@
 #include "task/task.h"
 
 static ISR80H_COMMAND isr80h_commands[MODERNOS_MAX_ISR80H_COMMANDS];
+static INTERRUPT_CALLBACK_FUNCTION interrupt_callbacks[MODERNOS_TOTAL_INTERRUPTS];
 
 extern void* interrupt_pointer_table[MODERNOS_TOTAL_INTERRUPTS];
 
@@ -31,6 +33,14 @@ void no_interrupt_handler()
 
 void interrupt_handler(int interrupt, struct interrupt_frame* frame)
 {
+    kernel_page();
+    if(interrupt_callbacks[interrupt] != 0)
+    {
+        task_current_save_state(frame);
+        interrupt_callbacks[interrupt](frame);
+    }
+    
+    task_page();
     outb(0x20, 0x20);
 }
 
@@ -63,6 +73,15 @@ void idt_init()
 
     // Load the interrupt descriptor table
     idt_load(&idtr_descriptor);
+}
+
+int idt_register_interrupt_callback(int interrupt, INTERRUPT_CALLBACK_FUNCTION interrupt_callback)
+{
+    if(interrupt < 0 || interrupt >= MODERNOS_TOTAL_INTERRUPTS)
+        return -EINVARG;
+
+    interrupt_callbacks[interrupt] = interrupt_callback;
+    return 0;
 }
 
 void isr80h_register_command(int command_id, ISR80H_COMMAND command)
