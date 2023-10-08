@@ -13,7 +13,7 @@
 
 #include <stdbool.h>
 
-const char* elf_signature[] = {0x7f, 'E', 'L', 'F'};
+const char elf_signature[] = {0x7f, 'E', 'L', 'F'};
 
 static bool elf_valid_signature(void* buffer)
 {
@@ -23,7 +23,7 @@ static bool elf_valid_signature(void* buffer)
 static bool elf_valid_class(struct elf_header* header)
 {
     // We only support 32 bit binaries.
-    return header->e_ident[EI_CLASS] == ELFCLASSNONE | header->e_ident[EI_CLASS] == ELFCLASS32;
+    return header->e_ident[EI_CLASS] == ELFCLASSNONE || header->e_ident[EI_CLASS] == ELFCLASS32;
 }
 
 static bool elf_valid_encoding(struct elf_header* header)
@@ -89,12 +89,12 @@ void* elf_virtual_end(struct elf_file* file)
     return file->virtual_end_address;
 }
 
-void* elf_physical_start(struct elf_file* file)
+void* elf_phys_base(struct elf_file* file)
 {
     return file->physical_base_address;
 }
 
-void* elf_physical_end(struct elf_file* file)
+void* elf_phys_end(struct elf_file* file)
 {
     return file->physical_end_address;
 }
@@ -102,7 +102,7 @@ void* elf_physical_end(struct elf_file* file)
 int elf_validate_loaded(struct elf_header* header)
 {
     return (elf_valid_signature(header) && elf_valid_class(header) && elf_valid_encoding(header) && elf_has_program_header(header)) 
-    ? MODERNOS_ALL_OK : -EINVARG;
+    ? MODERNOS_ALL_OK : -EINFORMAT;
 }
 
 int elf_process_phdr_pt_load(struct elf_file* elf_file, struct elf32_phdr* phdr)
@@ -129,13 +129,15 @@ int elf_process_pheader(struct elf_file* elf_file, struct elf32_phdr* phdr)
 
     switch (phdr->p_type)
     {
-    case PT_LOAD:
-        res = elf_process_phdr_pt_load(elf_file, phdr);
+        case PT_LOAD:
+            res = elf_process_phdr_pt_load(elf_file, phdr);
         break;
     }
+
+    return res;
 }
 
-int elf_process_pheader(struct elf_file* elf_file)
+int elf_process_pheaders(struct elf_file* elf_file)
 {
     int res = 0;
 
@@ -180,7 +182,7 @@ int elf_load(const char* filename, struct elf_file** file_out)
     fd = res;
     struct file_stat stat;
     res = fstat(fd, &stat);
-    if(res <= 0)
+    if(res < 0)
         goto out;
 
     elf_file->elf_memory = kzalloc(stat.file_size);
@@ -202,7 +204,7 @@ out:
 void elf_close(struct elf_file* file)
 {
     if(!file)
-        return 0;
+        return;
 
     kfree(file->elf_memory);
     kfree(file);
