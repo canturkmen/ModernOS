@@ -1,4 +1,4 @@
-FILES=./build/start.o
+FILES=./build/start.o ./build/modernos.o
 INCLUDES= 
 
 all: ${FILES}
@@ -6,7 +6,10 @@ all: ${FILES}
 
 ./build/start.o: ./src/start.asm
 	nasm -f elf ./src/start.asm -o ./build/start.o
-	
+
+./build/modernos.o: ./src/modernos.asm
+	nasm -f elf ./src/modernos.asm -o ./build/modernos.o
+
 clean:
 	rm -rf ${FILES}
 	rm ./stdlib.elf
