@@ -16,6 +16,12 @@ int main(int argc, char **argv)
     modernos_getkeyblock();
     print("Hello world\n");
 
+    char buf[10242];
+
+    modernos_terminal_readline(buf, sizeof(buf), true);
+    
+    print(buf);
+
     while(1)
     {
 
