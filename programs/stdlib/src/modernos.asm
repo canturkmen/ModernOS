@@ -4,6 +4,7 @@ section .asm
 
 global print:function
 global getkey:function
+global modernos_putchar:function
 global modernos_malloc:function
 global modernos_free:function
 
@@ -18,11 +19,23 @@ print:
     pop ebp
     ret
 
+; int getkey()
 getkey:
     push ebp
     mov ebp, esp
     mov eax, 2 ; Command getkey
     int 0x80
+    pop ebp
+    ret
+
+; void modernos_putchar(char c)
+modernos_putchar:
+    push ebp
+    mov ebp, esp
+    mov eax, 3 ; Command putchar
+    push dword[ebp + 8] ; Variable c
+    int 0x80
+    add esp, 4
     pop ebp
     ret
 

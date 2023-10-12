@@ -8,7 +8,7 @@ char* itoa(int i)
     text[11] = 0;
     char neg = 1;
     if(i >= 0)
-    {
+    { 
         neg = 0;
         i = -i;
     }
