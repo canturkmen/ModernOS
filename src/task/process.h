@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #include "config.h"
 #include "task.h"
@@ -55,5 +56,6 @@ int process_load(const char* filename, struct process** process);
 struct process* process_current();
 struct process* process_get(int process_id);
 void* process_malloc(struct process* process, size_t size);
+void process_free(struct process* process, void* ptr);
 
 #endif
