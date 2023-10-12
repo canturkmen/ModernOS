@@ -3,7 +3,7 @@
 section .asm
 
 global print:function
-global getkey:function
+global modernos_getkey:function
 global modernos_putchar:function
 global modernos_malloc:function
 global modernos_free:function
@@ -19,8 +19,8 @@ print:
     pop ebp
     ret
 
-; int getkey()
-getkey:
+; int modernos_getkey()
+modernos_getkey:
     push ebp
     mov ebp, esp
     mov eax, 2 ; Command getkey

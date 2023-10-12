@@ -13,10 +13,12 @@ int main(int argc, char **argv)
     void *ptr = malloc(512);
     free(ptr);
 
-    while (1)
+    modernos_getkeyblock();
+    print("Hello world\n");
+
+    while(1)
     {
-        if (getkey() != 0)
-            print("Key was pressed");
+
     }
     return 0;
 }
