@@ -9,6 +9,7 @@ all: ./bin/boot.bin ./bin/kernel.bin user_programs
 	dd if=/dev/zero bs=1048576 count=16 >> ./bin/os.bin
 	sudo mount -t vfat ./bin/os.bin /mnt/d
 	sudo cp ./programs/blank/blank.elf /mnt/d
+	sudo cp ./programs/shell/shell.elf /mnt/d
 	sudo cp ./hello.txt /mnt/d
 	sudo umount /mnt/d
 
@@ -114,10 +115,12 @@ all: ./bin/boot.bin ./bin/kernel.bin user_programs
 
 user_programs:
 	cd ./programs/stdlib && $(MAKE) all
+	cd ./programs/shell && $(MAKE) all
 	cd ./programs/blank && $(MAKE) all
 
 user_programs_clean:
 	cd ./programs/stdlib && $(MAKE) clean
+	cd ./programs/shell && $(MAKE) clean
 	cd ./programs/blank && $(MAKE) clean
 
 clean: user_programs_clean
