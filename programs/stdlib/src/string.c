@@ -124,7 +124,7 @@ char* strtok(char* str, const char* delimeters)
 { 
     int i = 0;
     int len = strlen(delimeters);
-    if(!str || !sp) 
+    if(!str && !sp) 
         return 0;
 
     if (str && !sp) 

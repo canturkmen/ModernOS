@@ -5,11 +5,9 @@
 
 int main(int argc, char **argv)
 {
-    printf("My age is %i\n", 21);
-
-    char words[] = "Hello, how are you?";
+    char words[] = "hello how are you";
     const char* token = strtok(words, " ");
-
+    
     while(token)
     {
         printf("%s\n", token);
