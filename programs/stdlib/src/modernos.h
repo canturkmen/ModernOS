@@ -11,5 +11,6 @@ void *modernos_malloc(size_t size);
 void modernos_free(void *ptr);
 int modernos_getkeyblock();
 void modernos_terminal_readline(char *out, int max, bool output_while_typing);
+void modernos_process_load_start(const char* filename);
 
 #endif
