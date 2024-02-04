@@ -46,6 +46,6 @@ kernel_registers:
     mov es, ax
     mov gs, ax
     mov fs, ax
-    ret
+    ret 
 
 times 512-($ - $$) db 0
