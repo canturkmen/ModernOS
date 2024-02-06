@@ -171,6 +171,10 @@ void kernel_main()
     if(res != MODERNOS_ALL_OK)
         panic("Failed to load blank.elf\n");
 
+    struct command_argument argument;
+    strcpy(argument.argument, "Testing!");
+    argument.next = 0x00;
+    process_inject_arguments(process, &argument);
     task_run_first_ever_task();
 
     while(1)

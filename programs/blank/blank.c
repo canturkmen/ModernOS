@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv)
 {
-    char string[] = "hello world";
+    char* string = "hello world";
     struct command_argument* root_command = modernos_parse_command(string, sizeof(string));
     printf("%s\n", root_command->argument);
     printf("%s\n", root_command->next->argument);
