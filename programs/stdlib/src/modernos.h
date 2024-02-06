@@ -4,6 +4,12 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+struct command_argument
+{
+    char argument[512];
+    struct command_argument* next;
+};
+
 void print(const char *message);
 int modernos_getkey();
 void modernos_putchar(char c);
@@ -12,5 +18,6 @@ void modernos_free(void *ptr);
 int modernos_getkeyblock();
 void modernos_terminal_readline(char *out, int max, bool output_while_typing);
 void modernos_process_load_start(const char* filename);
+struct command_argument* modernos_parse_command(const char* command, int max);
 
 #endif
