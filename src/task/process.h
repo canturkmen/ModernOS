@@ -13,6 +13,12 @@
 
 typedef unsigned char PROCESS_FILETYPE;
 
+struct process_allocation
+{
+    void* ptr;
+    size_t size;
+};
+
 struct process
 {
     // The process id
@@ -24,7 +30,7 @@ struct process
     struct task* task;
 
     // The memory (malloc) allocations of the process
-    void* allocations[MODERNOS_MAX_PROGRAMS_ALLOCATIONS];
+    struct process_allocation allocations[MODERNOS_MAX_PROGRAMS_ALLOCATIONS];
 
     PROCESS_FILETYPE filetype;
 
