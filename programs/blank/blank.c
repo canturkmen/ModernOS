@@ -5,10 +5,9 @@
 
 int main(int argc, char **argv)
 {
-    char* string = "hello world";
-    struct command_argument* root_command = modernos_parse_command(string, sizeof(string));
-    printf("%s\n", root_command->argument);
-    printf("%s\n", root_command->next->argument);
+    struct process_arguments arguments;
+    modernos_process_get_arguments(&arguments);
+    printf("%i %s\n", arguments.argc, arguments.argv[0]);
 
     while(1)
     {

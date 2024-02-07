@@ -8,6 +8,7 @@ global modernos_putchar:function
 global modernos_malloc:function
 global modernos_free:function
 global modernos_process_load_start:function
+global modernos_process_get_arguments:function
 
 ; void print(const char* message)
 print:
@@ -68,6 +69,17 @@ modernos_process_load_start:
     mov ebp, esp
     mov eax, 6 ; Command 6 process load start (Starts a process)
     push dword[ebp + 8] ; Variable "filename"
+    int 0x80
+    add esp, 4
+    pop ebp
+    ret
+
+; void modernos_process_get_arguments(struct process_arguments* arguments)
+modernos_process_get_arguments:
+    push ebp
+    mov ebp, esp
+    mov eax, 8 ; Command 8
+    push dword[ebp + 8] ; Variable "arguments"
     int 0x80
     add esp, 4
     pop ebp

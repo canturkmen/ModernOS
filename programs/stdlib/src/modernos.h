@@ -10,6 +10,12 @@ struct command_argument
     struct command_argument* next;
 };
 
+struct process_arguments
+{
+    int argc;
+    char** argv;
+};
+
 void print(const char *message);
 int modernos_getkey();
 void modernos_putchar(char c);
@@ -19,5 +25,6 @@ int modernos_getkeyblock();
 void modernos_terminal_readline(char *out, int max, bool output_while_typing);
 void modernos_process_load_start(const char* filename);
 struct command_argument* modernos_parse_command(const char* command, int max);
+void modernos_process_get_arguments(struct process_arguments* arguments);
 
 #endif

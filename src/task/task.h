@@ -60,5 +60,6 @@ void task_return(struct registers* regs);
 void restore_general_purpose_registers(struct registers* regs);
 
 void task_current_save_state(struct interrupt_frame* frame);
+void* task_virtual_address_to_physical(struct task* task, void* virtual_address);
 
 #endif
