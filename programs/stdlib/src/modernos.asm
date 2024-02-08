@@ -10,6 +10,7 @@ global modernos_free:function
 global modernos_process_load_start:function
 global modernos_process_get_arguments:function
 global modernos_system:function
+global modernos_exit:function
 
 ; void print(const char* message)
 print:
@@ -92,6 +93,16 @@ modernos_process_get_arguments:
     mov ebp, esp
     mov eax, 8 ; Command 8
     push dword[ebp + 8] ; Variable "arguments"
+    int 0x80
+    add esp, 4
+    pop ebp
+    ret
+
+; void modernos_exit()
+modernos_exit:
+    push ebp
+    mov ebp, esp
+    mov eax, 9 ; Command 9
     int 0x80
     add esp, 4
     pop ebp

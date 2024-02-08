@@ -28,5 +28,6 @@ struct command_argument* modernos_parse_command(const char* command, int max);
 void modernos_process_get_arguments(struct process_arguments* arguments);
 int modernos_system(struct command_argument* arguments);
 int modernos_system_run(const char* command);
+void modernos_exit();
 
 #endif
