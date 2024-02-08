@@ -7,6 +7,7 @@
 #include "../io/io.h"
 
 #include "task/task.h"
+#include "task/process.h"
 
 static ISR80H_COMMAND isr80h_commands[MODERNOS_MAX_ISR80H_COMMANDS];
 static INTERRUPT_CALLBACK_FUNCTION interrupt_callbacks[MODERNOS_TOTAL_INTERRUPTS];
@@ -55,8 +56,14 @@ void idt_set(int interrupt_no, void* address)
     desc->offset_1 = (uint32_t)address & 0x0000ffff;
     desc->selector = KERNEL_CODE_SELECTOR;
     desc->zero = 0x00;
-    desc->type_attr =  0xEE;
+    desc->type_attr = 0xEE;
     desc->offset_2 = (uint32_t)address >> 16;   
+}
+
+void idt_handle_exception()
+{
+    process_terminate(task_current()->process);
+    task_next();    
 }
 
 void idt_init()
@@ -70,6 +77,9 @@ void idt_init()
 
     idt_set(0, idt_zero);
     idt_set(0x80, isr80h_wrapper);
+
+    for(int i = 0; i < 0x20; i++)
+        idt_register_interrupt_callback(i, idt_handle_exception);
 
     // Load the interrupt descriptor table
     idt_load(&idtr_descriptor);
