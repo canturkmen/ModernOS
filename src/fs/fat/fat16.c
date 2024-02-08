@@ -203,6 +203,7 @@ out:
 int fat16_get_root_directory(struct disk* disk, struct fat_private* fat_private, struct fat_directory* directory)
 {
     int res = 0;
+    struct fat_directory_item* dir = 0x00;
     struct fat_header* primary_header = &fat_private->header.primary_header;
     int root_dir_sector_pos = (primary_header->fat_copies * primary_header->sectors_per_fat) + primary_header->reserved_sectors; 
     int root_dir_entries = fat_private->header.primary_header.root_dir_entries;
@@ -213,24 +214,24 @@ int fat16_get_root_directory(struct disk* disk, struct fat_private* fat_private,
 
     int total_items = fat16_get_total_items_for_directory(disk, root_dir_sector_pos);
 
-    struct fat_directory_item* dir = kzalloc(root_dir_size);
+    dir = kzalloc(root_dir_size);
     if(!dir)
     {
         res = -ENOMEM;
-        goto out;
+        goto err_out;
     }
 
     struct disk_stream* stream = fat_private->directory_stream;
     if(diskstreamer_seek(stream, fat16_sector_to_absolute(disk, root_dir_sector_pos)) != MODERNOS_ALL_OK)
     {
         res = -EIO;
-        goto out;
+        goto err_out;
     }
 
     if(diskstreamer_read(stream, dir, root_dir_size) != MODERNOS_ALL_OK)
     {
         res = -EIO;
-        goto out;
+        goto err_out;
     }
 
     directory->item = dir;
@@ -239,6 +240,12 @@ int fat16_get_root_directory(struct disk* disk, struct fat_private* fat_private,
     directory->ending_sector_pos = root_dir_sector_pos + (root_dir_size / disk->sector_size);
 
 out:
+    return res;
+
+err_out:
+    if(dir)
+        kfree(dir);
+
     return res;
 }
 
@@ -587,23 +594,39 @@ out:
 
 void* fat16_open(struct disk* disk, struct path_part* path, FILE_MODE mode)
 {
-    if(mode != FILE_MODE_READ)  
-        return ERROR(-ERDONLY);
-
     struct fat_file_descriptor* descriptor = 0;
+    int err_code = 0;
+
+    if(mode != FILE_MODE_READ) 
+    {
+        err_code = -ERDONLY;
+        goto err_out;
+    } 
+
     descriptor = kzalloc(sizeof(struct fat_file_descriptor));
 
     if(!descriptor)
-        return ERROR(-ENOMEM);
+    {
+        err_code = -ENOMEM;
+        goto err_out;
+    }
 
     descriptor->item = fat16_get_directory_entry(disk, path);
 
     if(!descriptor->item)
-        return ERROR(-EIO);
+    {
+        err_code = -EIO;
+        goto err_out;
+    }
     
     descriptor->pos = 0;
-
     return descriptor;
+
+err_out:
+    if(descriptor)
+        kfree(descriptor);
+
+    return ERROR(err_code);
 }
 
 static void fat16_free_file_descriptor(struct fat_file_descriptor* desc)
