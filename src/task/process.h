@@ -68,7 +68,7 @@ struct process
     } keyboard;
 
     // The arguments of the process
-    struct process_arguments* arguments;
+    struct process_arguments arguments;
 };  
 
 int process_switch(struct process* process);

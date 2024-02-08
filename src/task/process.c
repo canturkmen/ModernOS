@@ -29,7 +29,7 @@ struct process* process_current()
 
 struct process* process_get(int process_id)
 {
-    if(process_id < 0 || process_id > MODERNOS_MAX_PROCESSES)
+    if(process_id < 0 || process_id >= MODERNOS_MAX_PROCESSES)
         return NULL;
 
     return processes[process_id];
@@ -190,7 +190,6 @@ int process_terminate(struct process* process)
 
     // Free the process stack memory
     kfree(process->stack);
-    
     task_free(process->task);
     process_unlink(process);
 
@@ -200,8 +199,8 @@ out:
 
 void process_get_arguments(struct process* process, int* argc, char*** argv)
 {
-    *argc = process->arguments->argc;
-    *argv = process->arguments->argv;
+    *argc = process->arguments.argc;
+    *argv = process->arguments.argv;
 }
 
 int process_count_command_arguments(struct command_argument* root_argument)
@@ -252,8 +251,8 @@ int process_inject_arguments(struct process* process, struct command_argument* r
         i++;
     }
 
-    process->arguments->argc = argc;
-    process->arguments->argv = argv;
+    process->arguments.argc = argc;
+    process->arguments.argv = argv;
 out:
     return res;
 }
@@ -428,7 +427,7 @@ int process_load(const char* filename, struct process** process)
     {
         res = -EISTKN;
         goto out;
-    }
+    }   
 
     res = process_load_for_slot(filename, process, process_slot);
 
