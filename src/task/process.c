@@ -279,6 +279,7 @@ void process_free(struct process* process, void* ptr)
 
 static int process_load_binary(const char* filename, struct process* process)
 {
+    void* program_data_ptr = 0x00;
     int res = 0;
     int fd = fopen(filename, "r");
     if(!fd)
@@ -292,7 +293,7 @@ static int process_load_binary(const char* filename, struct process* process)
     if(res != MODERNOS_ALL_OK)
         goto out;
 
-    void* program_data_ptr = kzalloc(stat.file_size);
+    program_data_ptr = kzalloc(stat.file_size);
     if(!program_data_ptr)
     {
         res = -ENOMEM;
@@ -310,6 +311,11 @@ static int process_load_binary(const char* filename, struct process* process)
     process->size = stat.file_size;
 
 out:
+    if(res < 0)
+    {
+        if(program_data_ptr)
+            kfree(program_data_ptr);
+    }
     fclose(fd);
     return res;
 }
