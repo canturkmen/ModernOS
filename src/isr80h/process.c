@@ -46,15 +46,18 @@ void* isr80h_command7_invoke_system_command(struct interrupt_frame* frame)
     strcpy(path, "0:/");
     strncpy(path + 3, program_name, sizeof(path));
 
+    // Load the root command
     struct process* process = 0;
     int res = process_load_switch(path, &process);
     if(res < 0)
         return ERROR(res);
 
+    // Inject the arguments of the root command to the process
     res = process_inject_arguments(process, root_command_argument);
     if(res < 0)
         return ERROR(res);
 
+    // Switch to the root command task
     task_switch(process->task);
     task_return(&process->task->registers);    
 
